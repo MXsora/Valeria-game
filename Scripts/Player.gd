@@ -31,4 +31,5 @@ func _physics_process(delta):
 	direction.x = horizontal
 	direction.z = vertical
 	direction.normalized()
+	direction = direction.rotated(Vector3.UP, camera.rotation.y).normalized() * moveSpeed
 	move_and_slide(direction)
