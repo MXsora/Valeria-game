@@ -82,9 +82,7 @@ func getStickInput():
 	direction.z = vertical * moveSpeed
 
 func cameraFollow():
-	cameraOrbit.translation.x = lerp(cameraOrbit.translation.x, translation.x, .2)
-	cameraOrbit.translation.z = lerp(cameraOrbit.translation.z, translation.z, .2)
-	cameraOrbit.translation.y = lerp(cameraOrbit.translation.y, translation.y, .1)
+	cameraOrbit.translation = lerp(cameraOrbit.translation, translation, .1)
 
 func basicAttackString():
 	match curWeapon:
