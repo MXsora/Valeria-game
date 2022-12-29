@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scenes/InGame/Player.tscn" type="PackedScene" id=1]
 
@@ -8,9 +8,16 @@ size = Vector3( 22, 0.342, 22 )
 [sub_resource type="BoxShape" id=7]
 extents = Vector3( 10.9626, 0.209681, 10.9203 )
 
+[sub_resource type="CubeMesh" id=8]
+size = Vector3( 1, 4, 2 )
+
+[sub_resource type="BoxShape" id=9]
+extents = Vector3( 0.51145, 1.99289, 1 )
+
 [sub_resource type="CubeMesh" id=4]
 
 [sub_resource type="BoxShape" id=5]
+extents = Vector3( 0.950105, 1.0024, 1 )
 
 [node name="Spatial" type="Spatial"]
 
@@ -31,11 +38,20 @@ skeleton = NodePath("../..")
 [node name="CollisionShape" type="CollisionShape" parent="test geo/testFloor/StaticBody"]
 shape = SubResource( 7 )
 
-[node name="MeshInstance" type="MeshInstance" parent="test geo"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.07334, 1.07085, 0 )
+[node name="testGeo" type="MeshInstance" parent="test geo"]
+transform = Transform( 0.726047, 0.687645, 0, -0.687645, 0.726047, 0, 0, 0, 1, -2.53553, 0.268205, 0 )
+mesh = SubResource( 8 )
+
+[node name="StaticBody" type="StaticBody" parent="test geo/testGeo"]
+
+[node name="CollisionShape" type="CollisionShape" parent="test geo/testGeo/StaticBody"]
+shape = SubResource( 9 )
+
+[node name="testGeo2" type="MeshInstance" parent="test geo"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.522815, 1.07085, 0 )
 mesh = SubResource( 4 )
 
-[node name="StaticBody" type="StaticBody" parent="test geo/MeshInstance"]
+[node name="StaticBody" type="StaticBody" parent="test geo/testGeo2"]
 
-[node name="CollisionShape" type="CollisionShape" parent="test geo/MeshInstance/StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="test geo/testGeo2/StaticBody"]
 shape = SubResource( 5 )

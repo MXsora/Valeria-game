@@ -19,8 +19,8 @@ albedo_color = Color( 0.54902, 0.74902, 1, 1 )
 albedo_texture = SubResource( 6 )
 
 [sub_resource type="CylinderShape" id=8]
-height = 1.6473
-radius = 0.315524
+height = 1.64983
+radius = 0.382149
 
 [sub_resource type="BoxShape" id=3]
 extents = Vector3( 0.0697845, 0.580521, 0.12995 )

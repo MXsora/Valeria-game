@@ -11,11 +11,24 @@ var attackSpeed : float = 1
 var lastAttackTime : int = 0
 
 var moveSpeed : float = 5.0
+
 var jumpForce : float = 120.0
 
-enum states {IDLE,JUMPING,FALLING,MOVING,DODGING,ATTACK1,ATTACK2,ATTACK3,SPECIAL}
+var jumpHeight: float = 3.5
+var jumpTimetoPeak: float = 0.5
+var jumpTimetoDescent: float = 0.4
+
+var jumpVelocity: float = ((2.0 * jumpHeight) / jumpTimetoPeak)
+var jumpGravity: float = (-2.0 * jumpHeight) / (jumpTimetoPeak * jumpTimetoPeak)
+var fallGravity: float = (-2.0 * jumpHeight) / (jumpTimetoDescent * jumpTimetoDescent)
+
+var justLanded: bool = false
+var isJumping: bool = false
+
+enum jumpStates {READY, JUMPING, FALLING}
+enum attackStates {DODGING, ATTACK1, TTACK2, ATTACK3, SPECIAL}
 enum weapons {SwordAndBoard, GreatSword, Daggers, Scythe, Caestus, SwordWhip, BallAndChain, PunchClaws, BasicLongSword}
-var currentState
+var currentJumpState
 var curWeapon
 
 var attackCount: int = 0
@@ -25,44 +38,53 @@ var gravity : float = 60.0
 var horizontal: float = 0
 var vertical: float = 0
 var direction: Vector3 = Vector3(0,0,0)
+var snapVector: Vector3 = Vector3.DOWN
 
-onready var camera = get_node("CameraOrbit")
+onready var cameraOrbit = get_node("CameraOrbit")
 onready var model = get_node("model")
 
 func _ready():
-	camera.set_as_toplevel(true)
-	currentState = states.IDLE
+	cameraOrbit.set_as_toplevel(true)
+	currentJumpState = jumpStates.READY
 	
 	pass
 
 func _physics_process(delta):
 	cameraFollow()
 	getStickInput()
-	direction.x = direction.x * moveSpeed
-	direction.z = direction.z * moveSpeed
-	direction = direction.rotated(Vector3.UP, camera.rotation.y)
-	if(is_on_floor() and Input.is_action_just_pressed("ig_jump")):
-		direction.y += jumpForce
-	processGravity(delta)
-	direction = move_and_slide(direction, Vector3.UP)
+	direction = direction.rotated(Vector3.UP, cameraOrbit.rotation.y)
+	direction.y += getGravity() * delta
+	direction = move_and_slide_with_snap(direction, snapVector, Vector3.UP, true)
+	if(Input.is_action_just_pressed("ig_jump") and currentJumpState == jumpStates.READY):
+		jump()
+	if(is_on_floor() and currentJumpState == jumpStates.FALLING):
+		currentJumpState = jumpStates.READY
+		snapVector = Vector3.DOWN
+	if(getGravity() == fallGravity and currentJumpState == jumpStates.JUMPING):
+		currentJumpState = jumpStates.FALLING
+	#rotate the model so its looking in the direction of movement
 	if(horizontal or vertical != 0):
 		rotation.y = lerp_angle( rotation.y, atan2( direction.x, direction.z ), 1 )
 
-func processGravity(delta):
-	direction.y -= gravity * delta
+func getGravity():
+	return jumpGravity if direction.y < 0.0 else fallGravity
+
+func jump():
+	direction.y = jumpVelocity
+	currentJumpState = jumpStates.JUMPING
+	snapVector = Vector3.ZERO
 
 
 func getStickInput():
 	horizontal = Input.get_axis("ig_move_left", "ig_move_right")
 	vertical = Input.get_axis("ig_move_up", "ig_move_down")
-	direction.x = horizontal
-	direction.z = vertical
-	direction = direction.normalized()
+	direction.x = horizontal * moveSpeed
+	direction.z = vertical * moveSpeed
 
 func cameraFollow():
-	camera.translation.x = lerp(camera.translation.x, translation.x, .2)
-	camera.translation.z = lerp(camera.translation.z, translation.z, .2)
-	camera.translation.y = lerp(camera.translation.y, translation.y, .1)
+	cameraOrbit.translation.x = lerp(cameraOrbit.translation.x, translation.x, .2)
+	cameraOrbit.translation.z = lerp(cameraOrbit.translation.z, translation.z, .2)
+	cameraOrbit.translation.y = lerp(cameraOrbit.translation.y, translation.y, .1)
 
 func basicAttackString():
 	match curWeapon:
