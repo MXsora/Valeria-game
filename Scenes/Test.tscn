@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scenes/InGame/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/InGame/EnemyBase.tscn" type="PackedScene" id=2]
 
 [sub_resource type="CubeMesh" id=6]
 size = Vector3( 22, 0.342, 22 )
@@ -55,3 +56,6 @@ mesh = SubResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="test geo/testGeo2/StaticBody"]
 shape = SubResource( 5 )
+
+[node name="Enemy" parent="." instance=ExtResource( 2 )]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -6.68505, 1.23155, -4.53204 )

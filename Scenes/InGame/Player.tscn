@@ -1,8 +1,87 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scripts/CameraOrbit.gd" type="Script" id=1]
 [ext_resource path="res://Art/Work Files/TestSword.dae" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=3]
+
+[sub_resource type="Animation" id=9]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("WeaponHolder:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0.44722, 0.769016, 0.0721291 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("WeaponHolder:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 36, 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("WeaponHolder:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "attack_Test"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/path = NodePath("WeaponHolder:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.6, 0.8 ),
+"transitions": PoolRealArray( 2.37841, 0.435275, 1.93187, 1 ),
+"update": 0,
+"values": [ Vector3( 0.44722, 0.769016, 0.0721291 ), Vector3( 0.660832, 0.881931, -0.143301 ), Vector3( -0.241702, 0.825607, 0.546187 ), Vector3( 0.44722, 0.769016, 0.0721291 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("WeaponHolder:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.6, 0.8 ),
+"transitions": PoolRealArray( 2.37841, 0.435275, 1.93187, 1 ),
+"update": 0,
+"values": [ Vector3( 36, 0, 0 ), Vector3( -1.32203, 5.58161, -16.0354 ), Vector3( 27.3478, -128.868, -95.2929 ), Vector3( 36, 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("WeaponHolder:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.6, 0.8 ),
+"transitions": PoolRealArray( 2.37841, 0.435275, 1.93187, 1 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ) ]
+}
 
 [sub_resource type="CubeMesh" id=7]
 size = Vector3( 0.746, 1.634, 0.508 )
@@ -22,15 +101,23 @@ albedo_texture = SubResource( 6 )
 height = 1.64983
 radius = 0.382149
 
-[sub_resource type="BoxShape" id=3]
-extents = Vector3( 0.0697845, 0.580521, 0.12995 )
+[sub_resource type="CapsuleShape" id=11]
+radius = 0.106496
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 3 )
 
-[node name="model" type="MeshInstance" parent="."]
+[node name="Graphics" type="Spatial" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Graphics"]
+root_node = NodePath("../..")
+anims/RESET = SubResource( 9 )
+anims/attack_Test = SubResource( 10 )
+
+[node name="model" type="MeshInstance" parent="Graphics"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 mesh = SubResource( 7 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
@@ -52,5 +139,5 @@ transform = Transform( 1, 0, 0, 0, 0.809017, -0.587785, 0, 0.587785, 0.809017, 0
 [node name="HitBox" type="Area" parent="WeaponHolder"]
 
 [node name="CollisionShape" type="CollisionShape" parent="WeaponHolder/HitBox"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00455928, 0.818197, -0.0117473 )
-shape = SubResource( 3 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.00455928, 0.818197, -0.0117473 )
+shape = SubResource( 11 )
