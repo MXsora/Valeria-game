@@ -18,6 +18,10 @@ config/icon="res://icon.png"
 
 Global="*res://Scripts/Global.gd"
 
+[global]
+
+layer=false
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
@@ -80,6 +84,16 @@ ig_dodge={
 "events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":5,"pressure":0.0,"pressed":false,"script":null)
  ]
 }
+
+[layer_names]
+
+3d_physics/layer_1="WorldGeo"
+3d_physics/layer_2="Player"
+3d_physics/layer_3="Enemy"
+3d_physics/layer_4="Hitboxes"
+3d_physics/layer_5="Hurtboxes"
+3d_physics/layer_6="EnemyHitbox"
+3d_physics/layer_7="EnemyHurtbox"
 
 [physics]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/EnemyBase.gd" type="Script" id=1]
 
@@ -37,6 +37,9 @@ tracks/0/keys = {
 
 [sub_resource type="CapsuleShape" id=2]
 
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 0.944239, 0.918702, 1.41482 )
+
 [node name="Enemy" type="KinematicBody"]
 script = ExtResource( 1 )
 
@@ -57,4 +60,12 @@ shape = SubResource( 2 )
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
+[node name="hurtBox" type="Area" parent="."]
+collision_layer = 16
+collision_mask = 8
+
+[node name="CollisionShape" type="CollisionShape" parent="hurtBox"]
+shape = SubResource( 5 )
+
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="area_entered" from="hurtBox" to="." method="_on_hurtBox_area_entered"]

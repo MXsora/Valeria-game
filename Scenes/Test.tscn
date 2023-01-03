@@ -58,4 +58,13 @@ mesh = SubResource( 4 )
 shape = SubResource( 5 )
 
 [node name="Enemy" parent="." instance=ExtResource( 2 )]
-transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -6.68505, 1.23155, -4.53204 )
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -6.68505, 1.23155, -4.09266 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.8183, -0.162278, -0.551408, 0.550895, 0.495151, 0.671818, 0.164009, -0.853517, 0.49458, 0, 12.5654, 0 )
+light_energy = 0.706
+light_bake_mode = 0
+shadow_enabled = true
+shadow_bias = 0.0
+shadow_contact = 1.0
+directional_shadow_blend_splits = true
