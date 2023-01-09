@@ -60,12 +60,11 @@ shape = SubResource( 2 )
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
-[node name="hurtBox" type="Area" parent="."]
+[node name="HurtBox" type="Area" parent="."]
 collision_layer = 16
 collision_mask = 8
 
-[node name="CollisionShape" type="CollisionShape" parent="hurtBox"]
+[node name="CollisionShape" type="CollisionShape" parent="HurtBox"]
 shape = SubResource( 5 )
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
-[connection signal="area_entered" from="hurtBox" to="." method="_on_hurtBox_area_entered"]
