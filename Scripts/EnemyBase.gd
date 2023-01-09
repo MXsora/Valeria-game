@@ -1,6 +1,6 @@
 extends KinematicBody
 
-var maxHealth: int = 5
+var maxHealth: int = 3
 var currentHealth = maxHealth
 
 var moveSpeed: float = 2.0

@@ -8,7 +8,7 @@ var damage : int = 1
 var gold : int = 0
 
 var attackSpeed : float = 1
-var lastAttackTime : int = 0
+var comboNumber : int = 0
 
 var moveSpeed : float = 5.0
 
@@ -26,9 +26,10 @@ var justLanded: bool = false
 var isJumping: bool = false
 
 enum jumpStates {READY, JUMPING, FALLING}
-enum attackStates {READY, ATTACK1, ATTACK2, ATTACK3, SPECIAL, DODGING}
+enum actionStates {READY, ATTACK, SPECIAL, DODGE}
 enum weapons {SwordAndBoard, GreatSword, Daggers, Scythe, Caestus, SwordWhip, BallAndChain, PunchClaws, BasicLongSword}
 var currentJumpState
+var isMoving: bool = false
 var currentAttackState
 var currentWeapon
 var attackCount: int = 0
@@ -44,29 +45,49 @@ var enemyList = []
 
 onready var cameraOrbit = get_node("CameraOrbit")
 onready var model = get_node("Graphics/model")
-onready var animPlayer = get_node("Graphics/AnimationPlayer")
+onready var attackAnimPlayer = get_node("Graphics/AttackAnimationPlayer")
+onready var movementAnimPlayer = get_node("Graphics/MovementAnimationPlayer")
 onready var userInterface = find_node("Player_UI")
 onready var hitBox = get_node("WeaponHolder/HitBox")
+onready var comboWaitTimer = get_node("Timer")
 
 func _ready():
 	cameraOrbit.set_as_toplevel(true)
 	currentJumpState = jumpStates.READY
-	currentAttackState = attackStates.READY
+	isMoving = false
 	currentWeapon = weapons.BasicLongSword
+	comboWaitTimer.one_shot = true
 
 func _physics_process(delta):
 	cameraFollow()
-	getStickInput()
-	direction = direction.rotated(Vector3.UP, cameraOrbit.rotation.y)
+
+	#removes stick control while performing an action
+	if(currentAttackState == actionStates.READY):
+		getStickInput()
+		direction = direction.rotated(Vector3.UP, cameraOrbit.rotation.y)
+
+	#apply gravity
 	direction.y += getGravity() * delta
-	
+
+
+	#process inputs
 	if(Input.is_action_just_pressed("ig_jump") and currentJumpState == jumpStates.READY):
 		jump()
 	
-	if(Input.is_action_just_pressed("ig_attack") and currentAttackState == attackStates.READY):
+	if(Input.is_action_just_pressed("ig_attack") and is_on_floor()):
 		basicAttackString()
 	
-	#readies the player to the ready state after landing from a jump
+	if(Input.is_action_just_pressed("ig_heavy_attack") and is_on_floor()):
+		pass
+
+	if(Input.is_action_just_pressed("ig_special_attack") and is_on_floor()):
+		pass
+
+	if(Input.is_action_just_pressed("ig_dodge") and is_on_floor()):
+		pass
+
+
+	#changes the player to the READY state after landing from a jump
 	if(is_on_floor() and currentJumpState == jumpStates.FALLING):
 		currentJumpState = jumpStates.READY
 		snapVector = Vector3.DOWN
@@ -75,12 +96,39 @@ func _physics_process(delta):
 	if(getGravity() == fallGravity and currentJumpState != jumpStates.FALLING):
 		currentJumpState = jumpStates.FALLING
 	
-	#move the player
-	direction = move_and_slide_with_snap(direction, snapVector, Vector3.UP, true)	
-	
-	#rotate the model so its looking in the direction of movement
+
+
+
+	#rotate the model so its looking in the direction of movement and set whether the player is moving based on stick input
 	if(horizontal or vertical != 0):
 		rotation.y = lerp_angle( rotation.y, atan2( direction.x, direction.z ), 1 )
+		isMoving = true
+	else:
+		isMoving = false
+	
+
+
+	#check whether an attack is happening or not, if so, stop the moveming/idle animations, and reset attack state if not
+	if(attackAnimPlayer.is_playing() and movementAnimPlayer.is_playing()):
+		movementAnimPlayer.stop(true)
+	elif(!attackAnimPlayer.is_playing() and currentAttackState != actionStates.READY):
+		attackAnimPlayer.play("RESET")
+		attackAnimPlayer.stop()
+		currentAttackState = actionStates.READY
+		comboNumber = 0
+
+
+
+	#start playing the appropriate movement animation
+	if(isMoving and currentAttackState == actionStates.READY and movementAnimPlayer.current_animation != "Moving"):
+		movementAnimPlayer.play("Moving")
+	if(!isMoving and currentAttackState == actionStates.READY and movementAnimPlayer.current_animation != "Idle"):
+		movementAnimPlayer.play("Idle")
+
+
+	#move the player
+	direction = move_and_slide_with_snap(direction, snapVector, Vector3.UP, true)	
+
 
 func getGravity():
 	return jumpGravity if direction.y < 0.0 else fallGravity
@@ -101,8 +149,10 @@ func cameraFollow():
 	cameraOrbit.translation = lerp(cameraOrbit.translation, translation, .1)
 
 func basicAttackString():
+	if (!comboWaitTimer.is_stopped()):
+		return
 	enemyList.clear()
-	currentAttackState += 1
+	currentAttackState = actionStates.ATTACK
 	match currentWeapon:
 		weapons.SwordAndBoard:
 			pass
@@ -121,9 +171,23 @@ func basicAttackString():
 		weapons.PunchClaws:
 			pass
 		weapons.BasicLongSword:
-			direction = transform.basis.z
-			animPlayer.play("attack_Test1")
-	currentAttackState = attackStates.READY
+			match comboNumber:
+				0:
+					direction = transform.basis.z * 1
+					attackAnimPlayer.play("attack_Test1")
+					comboWaitTimer.start(0.45)
+					comboNumber += 1
+				1:
+					direction = transform.basis.z * 1
+					attackAnimPlayer.play("attack_Test2")
+					comboWaitTimer.start(0.45)
+					comboNumber += 1
+				2:
+					direction = transform.basis.z * 4
+					attackAnimPlayer.play("attack_Test3")
+					comboWaitTimer.start(0.45)
+					comboNumber += 1
+					
 
 func heavyAttack():
 	match currentWeapon:
@@ -189,11 +253,12 @@ func SwitchWeapon(wepNumber):
 		weapons.BasicLongSword:
 			damage = 2
 
+
 func GetHit(enemyDamage):
 	curHP -= enemyDamage
 	userInterface.UpdateHealth()
 
-#checks if the enemy that has just been hit has already been hit by this attack
+#checks if the enemy that has just been hit has alIDLE been hit by this attack
 func CheckEnemy(enemy):
 	if(!enemyList.has(enemy)):
 		enemyList.append(enemy)
