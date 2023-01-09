@@ -1,8 +1,8 @@
 extends KinematicBody
 
 
-var curHp : int = 10
-var maxHp : int = 10
+var curHP : int = 10
+var maxHP : int = 10
 var damage : int = 1
 
 var gold : int = 0
@@ -40,11 +40,13 @@ var vertical: float = 0
 var direction: Vector3 = Vector3(0,0,0)
 var snapVector: Vector3 = Vector3.DOWN
 
-signal player_hit_confirm
+var enemyList = []
 
 onready var cameraOrbit = get_node("CameraOrbit")
 onready var model = get_node("Graphics/model")
 onready var animPlayer = get_node("Graphics/AnimationPlayer")
+onready var userInterface = find_node("Player_UI")
+onready var hitBox = get_node("WeaponHolder/HitBox")
 
 func _ready():
 	cameraOrbit.set_as_toplevel(true)
@@ -68,6 +70,7 @@ func _physics_process(delta):
 	if(is_on_floor() and currentJumpState == jumpStates.FALLING):
 		currentJumpState = jumpStates.READY
 		snapVector = Vector3.DOWN
+		
 	#switch from a jumping state to a falling state
 	if(getGravity() == fallGravity and currentJumpState != jumpStates.FALLING):
 		currentJumpState = jumpStates.FALLING
@@ -98,7 +101,8 @@ func cameraFollow():
 	cameraOrbit.translation = lerp(cameraOrbit.translation, translation, .1)
 
 func basicAttackString():
-	currentAttackState = attackStates.ATTACK1
+	enemyList.clear()
+	currentAttackState += 1
 	match currentWeapon:
 		weapons.SwordAndBoard:
 			pass
@@ -117,7 +121,7 @@ func basicAttackString():
 		weapons.PunchClaws:
 			pass
 		weapons.BasicLongSword:
-			direction.z += 5
+			direction = transform.basis.z
 			animPlayer.play("attack_Test1")
 	currentAttackState = attackStates.READY
 
@@ -162,8 +166,45 @@ func specialAttack():
 			pass
 		weapons.BasicLongSword:
 			pass
-	
 
+func SwitchWeapon(wepNumber):
+	currentWeapon = weapons.wepNumber
+	match currentWeapon:
+		weapons.SwordAndBoard:
+			pass
+		weapons.GreatSword:
+			pass
+		weapons.Daggers:
+			pass
+		weapons.Scythe:
+			pass
+		weapons.Caestus:
+			pass
+		weapons.SwordWhip:
+			pass
+		weapons.BallAndChain:
+			pass
+		weapons.PunchClaws:
+			pass
+		weapons.BasicLongSword:
+			damage = 2
+
+func GetHit(enemyDamage):
+	curHP -= enemyDamage
+	userInterface.UpdateHealth()
+
+#checks if the enemy that has just been hit has already been hit by this attack
+func CheckEnemy(enemy):
+	if(!enemyList.has(enemy)):
+		enemyList.append(enemy)
+		return true
+	else:
+		return false
 
 func _on_HitBox_area_entered(area):
-	emit_signal("player_hit_confirm")
+	if (CheckEnemy(area)):
+		if (area.get_parent().has_method("GetHit")):
+			area.get_parent().GetHit(damage)
+
+func _on_HurtBox_area_entered(area):
+	GetHit(1)

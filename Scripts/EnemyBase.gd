@@ -1,6 +1,6 @@
 extends KinematicBody
 
-var maxHealth: int = 3
+var maxHealth: int = 5
 var currentHealth = maxHealth
 
 var moveSpeed: float = 2.0
@@ -31,7 +31,7 @@ func _physics_process(delta):
 	if (currentState == states.MOVING):
 		forward = move_and_slide(forward)
 
-func changeState():
+func ChangeState():
 	forward = transform.basis.z * moveSpeed
 	#iterate through the states until reaching the end, then loop back
 	if(currentState == states.MOVING):
@@ -39,23 +39,17 @@ func changeState():
 	else:
 		currentState = currentState + 1
 
-func getHit():
-	if(justHit):
-		pass
-	currentHealth -= 1
+func GetHit(playerDamage):
+	currentHealth -= playerDamage
 	timer.paused = true
 	animPlayer.play("hurt_test")
 	yield(animPlayer, "animation_finished")
 	checkDeath()
 	timer.paused = false
-	justHit = true
 
 func checkDeath():
-	if(currentHealth >= 0):
+	if(currentHealth <= 0):
 		queue_free()
 
 func _on_Timer_timeout():
-	changeState()
-
-func _on_hurtBox_area_entered(area):
-	getHit()
+	ChangeState()
