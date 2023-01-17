@@ -1,12 +1,14 @@
 extends Control
 
 
-onready var player = find_node("Player")
+export var playerPath: NodePath
+onready var player: Node
 onready var healthBar = get_node("HealthBar")
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player = get_node(playerPath)
 	healthBar.max_value = player.maxHP
 
 func UpdateHealth():

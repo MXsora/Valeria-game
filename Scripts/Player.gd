@@ -10,7 +10,7 @@ var gold : int = 0
 var attackSpeed : float = 1
 var comboNumber : int = 0
 
-var moveSpeed : float = 5.0
+var moveSpeed : float = 7.0
 
 var jumpForce : float = 120.0
 
@@ -27,17 +27,18 @@ var isJumping: bool = false
 
 enum jumpStates {READY, JUMPING, FALLING}
 enum actionStates {READY, ATTACK, SPECIAL, DODGE}
-enum weapons {SwordAndBoard, GreatSword, Daggers, Scythe, Caestus, SwordWhip, BallAndChain, PunchClaws, BasicLongSword}
+enum weapons {SwordAndBoard, GreatSword, Daggers, Scythe, Caestus, SwordWhip, Mace, PunchClaws, BasicLongSword}
 var currentJumpState
 var isMoving: bool = false
-var currentAttackState
+var currentActionState
 var currentWeapon
 var attackCount: int = 0
 
 var gravity : float = 60.0
 
-var horizontal: float = 0
-var vertical: float = 0
+var LJoystick: Vector2 = Vector2(0,0)
+var RJoystick: Vector2 = Vector2(0,0)
+var weaponWheel: Vector2 = Vector2(0,0)
 var direction: Vector3 = Vector3(0,0,0)
 var snapVector: Vector3 = Vector3.DOWN
 
@@ -49,26 +50,70 @@ onready var attackAnimPlayer = get_node("Graphics/AttackAnimationPlayer")
 onready var movementAnimPlayer = get_node("Graphics/MovementAnimationPlayer")
 onready var userInterface = find_node("Player_UI")
 onready var hitBox = get_node("WeaponHolder/HitBox")
-onready var comboWaitTimer = get_node("Timer")
+onready var recoveryTimer = get_node("Timer")
+onready var moveTween = get_node("Tween")
+
+onready var basicSwordModel = get_node("WeaponHolder/Weapons/basic long sword")
+onready var punchDaggerModel = get_node("WeaponHolder/Weapons/punching dagger")
+onready var daggerModel = get_node("WeaponHolder/Weapons/dagger")
+onready var saberModel = get_node("WeaponHolder/Weapons/saber")
+onready var rapierModel = get_node("WeaponHolder/Weapons/rapier")
+onready var scytheModel = get_node("WeaponHolder/Weapons/scythe")
+onready var greatSwordModel = get_node("WeaponHolder/Weapons/greatsword")
+onready var maceModel = get_node("WeaponHolder/Weapons/mace")
+onready var caestusModel = get_node("WeaponHolder/Weapons/caestus")
+var currentWeaponModel = Mesh
 
 func _ready():
 	cameraOrbit.set_as_toplevel(true)
 	currentJumpState = jumpStates.READY
+	currentActionState = actionStates.READY
 	isMoving = false
 	currentWeapon = weapons.BasicLongSword
-	comboWaitTimer.one_shot = true
+	recoveryTimer.one_shot = true
+	currentWeaponModel = basicSwordModel
+	currentWeaponModel.visible = true
 
 func _physics_process(delta):
 	cameraFollow()
 
 	#removes stick control while performing an action
-	if(currentAttackState == actionStates.READY):
+	if(currentActionState == actionStates.READY):
 		getStickInput()
-		direction = direction.rotated(Vector3.UP, cameraOrbit.rotation.y)
+		getRightStickInput()
+	
+	#change the raw stick input into a proportional move speed
+	direction.x = LJoystick.x * moveSpeed
+	direction.z = LJoystick.y * moveSpeed
 
+	#check if the right stick has been touched and if so, change to the weapon specified
+	if(RJoystick.x or RJoystick.y != 0):
+		match RJoystick:
+			Vector2(0,1):
+				SwitchWeapon(0)
+			Vector2(1,1):
+				SwitchWeapon(1)
+			Vector2(1,0):
+				SwitchWeapon(2)
+			Vector2(1,-1):
+				SwitchWeapon(3)
+			Vector2(0,-1):
+				SwitchWeapon(4)
+			Vector2(-1,-1):
+				SwitchWeapon(5)
+			Vector2(-1,0):
+				SwitchWeapon(6)
+			Vector2(-1,1):
+				SwitchWeapon(7)
+	
+	
+	#rotate the direction so that movement relates to the position of the camera
+	direction = direction.rotated(Vector3.UP, cameraOrbit.rotation.y)
+	
 	#apply gravity
 	direction.y += getGravity() * delta
 
+	
 
 	#process inputs
 	if(Input.is_action_just_pressed("ig_jump") and currentJumpState == jumpStates.READY):
@@ -83,9 +128,18 @@ func _physics_process(delta):
 	if(Input.is_action_just_pressed("ig_special_attack") and is_on_floor()):
 		pass
 
-	if(Input.is_action_just_pressed("ig_dodge") and is_on_floor()):
-		pass
+	if(Input.is_action_just_pressed("ig_dodge") and is_on_floor() and recoveryTimer.is_stopped()):
+		comboNumber = 0
+		currentActionState = actionStates.DODGE
+		attackAnimPlayer.play("Dodge")
+		moveTween.interpolate_property(self, "moveSpeed", 35, moveSpeed, 0.5, Tween.TRANS_EXPO,Tween.EASE_OUT )
+		moveTween.start()
+		recoveryTimer.start(0.4)
 
+
+		
+	if(currentActionState == actionStates.DODGE and recoveryTimer.is_stopped()):
+		ResetActionState()
 
 	#changes the player to the READY state after landing from a jump
 	if(is_on_floor() and currentJumpState == jumpStates.FALLING):
@@ -97,35 +151,32 @@ func _physics_process(delta):
 		currentJumpState = jumpStates.FALLING
 	
 
-
-
-	#rotate the model so its looking in the direction of movement and set whether the player is moving based on stick input
-	if(horizontal or vertical != 0):
-		rotation.y = lerp_angle( rotation.y, atan2( direction.x, direction.z ), 1 )
-		isMoving = true
-	else:
-		isMoving = false
 	
 
 
-	#check whether an attack is happening or not, if so, stop the moveming/idle animations, and reset attack state if not
+	#check whether an attack is happening or not, if so, stop the moveing/idle animations, and reset attack state if not
 	if(attackAnimPlayer.is_playing() and movementAnimPlayer.is_playing()):
 		movementAnimPlayer.stop(true)
-	elif(!attackAnimPlayer.is_playing() and currentAttackState != actionStates.READY):
+	elif(!attackAnimPlayer.is_playing() and currentActionState != actionStates.READY):
 		attackAnimPlayer.play("RESET")
 		attackAnimPlayer.stop()
-		currentAttackState = actionStates.READY
-		comboNumber = 0
+		ResetActionState()
 
 
 
 	#start playing the appropriate movement animation
-	if(isMoving and currentAttackState == actionStates.READY and movementAnimPlayer.current_animation != "Moving"):
+	if(isMoving and currentActionState == actionStates.READY and movementAnimPlayer.current_animation != "Moving"):
 		movementAnimPlayer.play("Moving")
-	if(!isMoving and currentAttackState == actionStates.READY and movementAnimPlayer.current_animation != "Idle"):
+	if(!isMoving and currentActionState == actionStates.READY and movementAnimPlayer.current_animation != "Idle"):
 		movementAnimPlayer.play("Idle")
 
 
+	#rotate the model so its looking in the direction of movement and set whether the player is moving based on stick input
+	if(LJoystick.x or LJoystick.y != 0):
+		rotation.y = lerp_angle( rotation.y, atan2( direction.x, direction.z ), 1 )
+		isMoving = true
+	else:
+		isMoving = false
 	#move the player
 	direction = move_and_slide_with_snap(direction, snapVector, Vector3.UP, true)	
 
@@ -140,19 +191,33 @@ func jump():
 
 
 func getStickInput():
-	horizontal = Input.get_axis("ig_move_left", "ig_move_right")
-	vertical = Input.get_axis("ig_move_up", "ig_move_down")
-	direction.x = horizontal * moveSpeed
-	direction.z = vertical * moveSpeed
+	LJoystick = Vector2(Input.get_axis("ig_move_left", "ig_move_right"), Input.get_axis("ig_move_up", "ig_move_down"))
+	LJoystick = LJoystick.normalized()
+	
+
+func getRightStickInput():
+	if(Input.get_axis("ig_weapon_wheel_left", "ig_weapon_wheel_right") > 0.15):
+		RJoystick.x = 1
+	elif(Input.get_axis("ig_weapon_wheel_left", "ig_weapon_wheel_right") < -0.15):
+		RJoystick.x = -1
+	else:
+		RJoystick.x = 0
+		
+	if(Input.get_axis("ig_weapon_wheel_up", "ig_weapon_wheel_down") > 0.15):
+		RJoystick.y = 1
+	elif(Input.get_axis("ig_weapon_wheel_up", "ig_weapon_wheel_down") < -0.15):
+		RJoystick.y = -1
+	else:
+		RJoystick.y = 0
 
 func cameraFollow():
 	cameraOrbit.translation = lerp(cameraOrbit.translation, translation, .1)
 
 func basicAttackString():
-	if (!comboWaitTimer.is_stopped()):
+	if (!recoveryTimer.is_stopped()):
 		return
 	enemyList.clear()
-	currentAttackState = actionStates.ATTACK
+	currentActionState = actionStates.ATTACK
 	match currentWeapon:
 		weapons.SwordAndBoard:
 			pass
@@ -166,30 +231,32 @@ func basicAttackString():
 			pass
 		weapons.SwordWhip:
 			pass
-		weapons.BallAndChain:
+		weapons.Mace:
 			pass
 		weapons.PunchClaws:
 			pass
 		weapons.BasicLongSword:
 			match comboNumber:
 				0:
-					direction = transform.basis.z * 1
-					attackAnimPlayer.play("attack_Test1")
-					comboWaitTimer.start(0.45)
-					comboNumber += 1
+					basicAttack(0.2, 15, 5, 0.2, "attack_Test1")
 				1:
-					direction = transform.basis.z * 1
-					attackAnimPlayer.play("attack_Test2")
-					comboWaitTimer.start(0.45)
-					comboNumber += 1
+					basicAttack(0.26, 10, 5, 0.3, "attack_Test2")
 				2:
-					direction = transform.basis.z * 4
-					attackAnimPlayer.play("attack_Test3")
-					comboWaitTimer.start(0.45)
-					comboNumber += 1
-					
+					basicAttack(0.4, 35, 2, 0.5, "attack_Test3")
+
+func basicAttack(recoveryTime, newMoveSpeed, endMoveSpeed, tweenTime, attackName):
+	attackAnimPlayer.play(attackName)
+	moveTween.interpolate_property(self, "moveSpeed", newMoveSpeed, endMoveSpeed, tweenTime, Tween.TRANS_EXPO,Tween.EASE_OUT )
+	moveTween.start()
+	recoveryTimer.start(recoveryTime)
+	comboNumber += 1
+	
 
 func heavyAttack():
+	if (!recoveryTimer.is_stopped()):
+		return
+	enemyList.clear()
+	currentActionState = actionStates.ATTACK
 	match currentWeapon:
 		weapons.SwordAndBoard:
 			pass
@@ -203,7 +270,7 @@ func heavyAttack():
 			pass
 		weapons.SwordWhip:
 			pass
-		weapons.BallAndChain:
+		weapons.Mace:
 			pass
 		weapons.PunchClaws:
 			pass
@@ -211,6 +278,10 @@ func heavyAttack():
 			pass
 
 func specialAttack():
+	if (!recoveryTimer.is_stopped()):
+		return
+	enemyList.clear()
+	currentActionState = actionStates.SPECIAL
 	match currentWeapon:
 		weapons.SwordAndBoard:
 			pass
@@ -224,7 +295,7 @@ func specialAttack():
 			pass
 		weapons.SwordWhip:
 			pass
-		weapons.BallAndChain:
+		weapons.Mace:
 			pass
 		weapons.PunchClaws:
 			pass
@@ -232,27 +303,46 @@ func specialAttack():
 			pass
 
 func SwitchWeapon(wepNumber):
-	currentWeapon = weapons.wepNumber
+	if (currentWeapon == wepNumber):
+		return
+	else:
+		currentWeaponModel.visible = false
+		currentWeapon = wepNumber
 	match currentWeapon:
 		weapons.SwordAndBoard:
-			pass
+			damage = 2
+			currentWeaponModel = saberModel
 		weapons.GreatSword:
-			pass
+			damage = 4
+			currentWeaponModel = greatSwordModel
 		weapons.Daggers:
-			pass
+			damage = 1
+			currentWeaponModel = daggerModel
 		weapons.Scythe:
-			pass
+			damage = 3
+			currentWeaponModel = scytheModel
 		weapons.Caestus:
-			pass
+			damage = 4
+			currentWeaponModel = caestusModel
 		weapons.SwordWhip:
-			pass
-		weapons.BallAndChain:
-			pass
+			damage = 2
+			currentWeaponModel = rapierModel
+		weapons.Mace:
+			damage = 3
+			currentWeaponModel = maceModel
 		weapons.PunchClaws:
-			pass
+			damage = 1
+			currentWeaponModel = punchDaggerModel
 		weapons.BasicLongSword:
 			damage = 2
+			currentWeaponModel = basicSwordModel
+	currentWeaponModel.visible = true
 
+
+func ResetActionState():
+	currentActionState = actionStates.READY
+	comboNumber = 0
+	moveSpeed = 7.0
 
 func GetHit(enemyDamage):
 	curHP -= enemyDamage

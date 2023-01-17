@@ -1,8 +1,49 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Scripts/CameraOrbit.gd" type="Script" id=1]
-[ext_resource path="res://Art/Work Files/TestSword.dae" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=3]
+[ext_resource path="res://Art/Work Files/Weapons.dae" type="PackedScene" id=4]
+
+[sub_resource type="Animation" id=18]
+resource_name = "Dodge"
+length = 0.4
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Graphics/model:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.2, 0.25, 0.4 ),
+"transitions": PoolRealArray( 0.366021, 1.41421, 1, 0.554785, 0.435276 ),
+"update": 0,
+"values": [ Vector3( 0, 1, 0 ), Vector3( 0, 1.11449, 0.318158 ), Vector3( 0, 0.821, 0.205 ), Vector3( 0, 1.103, 0.148 ), Vector3( 0, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Graphics/model:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.15, 0.25, 0.4 ),
+"transitions": PoolRealArray( 0.366021, 1.41421, 0.554785, 0.435276 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ), Vector3( 105.882, 0, 0 ), Vector3( 255, 0, 0 ), Vector3( 360, 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Graphics/model:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.15, 0.2, 0.35, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1.27456, 1.27456 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 0.615, 1 ), Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ) ]
+}
 
 [sub_resource type="Animation" id=9]
 length = 0.001
@@ -54,10 +95,46 @@ tracks/3/keys = {
 "update": 1,
 "values": [ true ]
 }
+tracks/4/type = "value"
+tracks/4/path = NodePath("Graphics/model:translation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 1, 0 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Graphics/model:rotation_degrees")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Graphics/model:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ) ]
+}
 
 [sub_resource type="Animation" id=10]
 resource_name = "attack_Test1"
-length = 0.6
+length = 0.32
 step = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath("WeaponHolder:translation")
@@ -66,10 +143,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.46, 0.6 ),
-"transitions": PoolRealArray( 2.37841, 0.435275, 1, 1.93187 ),
+"times": PoolRealArray( 0, 0.06, 0.22, 0.26, 0.32 ),
+"transitions": PoolRealArray( 2.37841, 0.435275, 1, 1.93187, 2.37841 ),
 "update": 0,
-"values": [ Vector3( 0.44722, 0.769016, 0.0721291 ), Vector3( 0.660832, 0.881931, -0.143301 ), Vector3( -0.126432, 0.692515, 0.517653 ), Vector3( -0.160418, 0.684338, 0.546187 ) ]
+"values": [ Vector3( 0.44722, 0.769016, 0.0721291 ), Vector3( 0.660832, 0.881931, -0.143301 ), Vector3( -0.126432, 0.692515, 0.517653 ), Vector3( -0.160418, 0.684338, 0.546187 ), Vector3( 0.44722, 0.769016, 0.0721291 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("WeaponHolder:rotation_degrees")
@@ -78,10 +155,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2, 0.46, 0.6 ),
-"transitions": PoolRealArray( 2.37841, 0.435275, 1, 1.93187 ),
+"times": PoolRealArray( 0, 0.06, 0.22, 0.26, 0.32 ),
+"transitions": PoolRealArray( 2.37841, 0.435275, 1, 1.93187, 2.37841 ),
 "update": 0,
-"values": [ Vector3( 36, 0, 0 ), Vector3( -1.32203, 5.58161, -16.0354 ), Vector3( 50.2955, -125.966, -109.212 ), Vector3( 52.5238, -131.645, -113.234 ) ]
+"values": [ Vector3( 36, 0, 0 ), Vector3( -1.32203, 5.58161, -16.0354 ), Vector3( 50.2955, -125.966, -109.212 ), Vector3( 52.5238, -131.645, -113.234 ), Vector3( 36, 0, 0 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("WeaponHolder:scale")
@@ -90,10 +167,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.2, 0.6 ),
-"transitions": PoolRealArray( 2.37841, 0.435275, 1.93187 ),
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
 "update": 0,
-"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ) ]
+"values": [  ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("WeaponHolder/HitBox/CollisionShape:disabled")
@@ -102,15 +179,16 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.1, 0.2, 0.6 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0.04, 0.06, 0.26, 0.28 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ true, false, false ]
+"values": [ true, false, false, true ]
 }
 
 [sub_resource type="Animation" id=12]
 resource_name = "attack_Test2"
-length = 0.8
+length = 0.44
+step = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath("WeaponHolder:translation")
 tracks/0/interp = 1
@@ -118,10 +196,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.6, 0.7 ),
-"transitions": PoolRealArray( 1.93187, 1.36604, 2.63902, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.26, 0.34, 0.44 ),
+"transitions": PoolRealArray( 1.93187, 0.757858, 2.07053, 2.07053, 1 ),
 "update": 0,
-"values": [ Vector3( -0.160418, 0.684338, 0.546187 ), Vector3( -0.591003, 0.94419, 0.166327 ), Vector3( 0.662294, 0.649643, 0.27453 ), Vector3( 0.44722, 0.769016, 0.0721291 ) ]
+"values": [ Vector3( -0.339413, 0.661495, 0.235517 ), Vector3( -0.591, 0.944, 0.146 ), Vector3( 0.282308, 0.970327, 0.547387 ), Vector3( 0.662294, 0.649643, 0.27453 ), Vector3( 0.44722, 0.769016, 0.0721291 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("WeaponHolder:rotation_degrees")
@@ -130,10 +208,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2, 0.6, 0.7 ),
-"transitions": PoolRealArray( 1.93187, 1.36604, 2.63902, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.26, 0.34, 0.44 ),
+"transitions": PoolRealArray( 1.93187, 0.757858, 2.07053, 2.07053, 1 ),
 "update": 0,
-"values": [ Vector3( 52.5238, -131.645, -113.234 ), Vector3( -14.205, -12.812, 45.1421 ), Vector3( 34.431, 125.681, 108.889 ), Vector3( 36, 0, 0 ) ]
+"values": [ Vector3( 42.7061, -105.902, -90.3563 ), Vector3( -0.591, 0.944, 0.146 ), Vector3( 32.1985, 92.1265, 88.5062 ), Vector3( 34.431, 125.681, 108.889 ), Vector3( 36, 0, 0 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("WeaponHolder:scale")
@@ -142,10 +220,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.2, 0.7 ),
-"transitions": PoolRealArray( 1.93187, 1.93187, 1 ),
+"times": PoolRealArray( 0, 0.44 ),
+"transitions": PoolRealArray( 1.93187, 1 ),
 "update": 0,
-"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ) ]
+"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ) ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("WeaponHolder/HitBox/CollisionShape:disabled")
@@ -154,15 +232,16 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.6, 0.7 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0.08, 0.1, 0.34, 0.36 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ false, false, true ]
+"values": [ true, false, false, true ]
 }
 
 [sub_resource type="Animation" id=13]
 resource_name = "attack_Test3"
-length = 0.7
+length = 0.54
+step = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath("WeaponHolder:translation")
 tracks/0/interp = 1
@@ -170,10 +249,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.3, 0.5, 0.7 ),
-"transitions": PoolRealArray( 2.63902, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.12, 0.34, 0.48, 0.54 ),
+"transitions": PoolRealArray( 1.93188, 1.56917, 0.378929, 1, 1 ),
 "update": 0,
-"values": [ Vector3( 0.662294, 0.649643, 0.27453 ), Vector3( 0.699763, 1.47371, -0.331044 ), Vector3( 0.511098, 0.99324, 0.330835 ), Vector3( 0.047009, 0.49847, 0.64718 ), Vector3( 0.44722, 0.769016, 0.0721291 ) ]
+"values": [ Vector3( 0.663667, 0.707338, 0.253254 ), Vector3( 0.699763, 1.47371, -0.331044 ), Vector3( 0.047009, 0.49847, 0.64718 ), Vector3( 0.0217835, 0.388445, 0.578069 ), Vector3( 0.44722, 0.769016, 0.0721291 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("WeaponHolder:rotation_degrees")
@@ -182,10 +261,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.3, 0.5, 0.7 ),
-"transitions": PoolRealArray( 2.63902, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.12, 0.34, 0.48, 0.54 ),
+"transitions": PoolRealArray( 1.93188, 1.56917, 0.378929, 1, 1 ),
 "update": 0,
-"values": [ Vector3( 34.431, 125.681, 108.889 ), Vector3( -59.5209, 29.1057, -26.9343 ), Vector3( 65.3857, -45.0436, -38.1127 ), Vector3( 64.7275, -147.949, -139.807 ), Vector3( 36, 0, 0 ) ]
+"values": [ Vector3( 31.13, 106.536, 114.396 ), Vector3( -59.5209, 29.1057, -26.9343 ), Vector3( 64.7275, -147.949, -139.807 ), Vector3( 56.2303, -159.948, -148.538 ), Vector3( 36, 0, 0 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("WeaponHolder:scale")
@@ -194,10 +273,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0.7 ),
-"transitions": PoolRealArray( 1 ),
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
 "update": 0,
-"values": [ Vector3( 1, 1, 1 ) ]
+"values": [  ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("WeaponHolder/HitBox/CollisionShape:disabled")
@@ -206,10 +285,10 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.5, 0.7 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0.1, 0.12, 0.48, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ false, false, true ]
+"values": [ true, false, false, true ]
 }
 
 [sub_resource type="Animation" id=15]
@@ -340,6 +419,7 @@ script = ExtResource( 3 )
 
 [node name="AttackAnimationPlayer" type="AnimationPlayer" parent="Graphics"]
 root_node = NodePath("../..")
+anims/Dodge = SubResource( 18 )
 anims/RESET = SubResource( 9 )
 anims/attack_Test1 = SubResource( 10 )
 anims/attack_Test2 = SubResource( 12 )
@@ -371,8 +451,6 @@ current = true
 [node name="WeaponHolder" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.809017, -0.587785, 0, 0.587785, 0.809017, 0.44722, 0.769016, 0.0721291 )
 
-[node name="TestSword" parent="WeaponHolder" instance=ExtResource( 2 )]
-
 [node name="HitBox" type="Area" parent="WeaponHolder"]
 collision_layer = 8
 collision_mask = 16
@@ -381,6 +459,35 @@ collision_mask = 16
 transform = Transform( 1, -4.65661e-09, 0, -3.72529e-09, 0, -1, 2.49129e-08, 1, -3.72529e-09, -0.00455928, 0.818197, -0.0117473 )
 shape = SubResource( 11 )
 disabled = true
+
+[node name="Weapons" parent="WeaponHolder" instance=ExtResource( 4 )]
+
+[node name="punching dagger" parent="WeaponHolder/Weapons" index="0"]
+visible = false
+
+[node name="dagger" parent="WeaponHolder/Weapons" index="1"]
+visible = false
+
+[node name="saber" parent="WeaponHolder/Weapons" index="2"]
+visible = false
+
+[node name="rapier" parent="WeaponHolder/Weapons" index="3"]
+visible = false
+
+[node name="scythe" parent="WeaponHolder/Weapons" index="4"]
+visible = false
+
+[node name="greatsword" parent="WeaponHolder/Weapons" index="5"]
+visible = false
+
+[node name="mace" parent="WeaponHolder/Weapons" index="6"]
+visible = false
+
+[node name="caestus" parent="WeaponHolder/Weapons" index="7"]
+visible = false
+
+[node name="basic long sword" parent="WeaponHolder/Weapons" index="8"]
+visible = false
 
 [node name="HurtBox" type="Area" parent="."]
 
@@ -391,5 +498,9 @@ shape = SubResource( 14 )
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 
+[node name="Tween" type="Tween" parent="."]
+
 [connection signal="area_entered" from="WeaponHolder/HitBox" to="." method="_on_HitBox_area_entered"]
 [connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
+
+[editable path="WeaponHolder/Weapons"]
