@@ -4,6 +4,7 @@ extends Control
 export var playerPath: NodePath
 onready var player: Node
 onready var healthBar = get_node("HealthBar")
+onready var weaponIcon = get_node("CurrentWeapon")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -15,6 +16,5 @@ func UpdateHealth():
 	healthBar.value = player.curHP
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func UpdateWeapon(weaponNum):
+	weaponIcon.frame = weaponNum
