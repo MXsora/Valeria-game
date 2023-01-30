@@ -17,6 +17,13 @@ config/icon="res://Valeri Temp Icon.png"
 [autoload]
 
 Global="*res://Scripts/Global.gd"
+MusicManager="*res://Scenes/Logic/MusicManager.tscn"
+
+[display]
+
+window/size/width=1920
+window/size/height=1080
+window/size/borderless=true
 
 [global]
 

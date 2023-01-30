@@ -1,14 +1,19 @@
 extends Spatial
 
 
-onready var enemy = get_node("Enemy")
+var enemyBase = preload("res://Scenes/InGame/Enemy_Base.tscn")
+var enemy
 onready var enemySpawn = get_node("EnemySpawn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	enemy.transform = enemySpawn.transform
+	pass
+
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	if(is_instance_valid(enemy) == false):
+		enemy = enemyBase.instance()
+		add_child(enemy)
+		enemy.transform = enemySpawn.transform

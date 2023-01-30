@@ -308,6 +308,7 @@ func SwitchWeapon(wepNumber):
 	else:
 		currentWeaponModel.visible = false
 		currentWeapon = wepNumber
+		userInterface.UpdateWeapon(wepNumber)
 	match currentWeapon:
 		weapons.SwordAndBoard:
 			damage = 2

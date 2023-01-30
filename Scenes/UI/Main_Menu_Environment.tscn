@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/UI/Main_Menu.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Art/Work Files/TestSword.dae" type="PackedScene" id=2]
+
+[sub_resource type="SphereMesh" id=1]
+radial_segments = 12
+rings = 12
+is_hemisphere = true
+
+[sub_resource type="CubeMesh" id=2]
+
+[node name="Main Menu" type="Spatial"]
+
+[node name="TestSword" parent="." instance=ExtResource( 2 )]
+transform = Transform( 0.77098, 5.5676e-08, 0.636859, -0.157325, -0.969007, 0.190458, 0.617121, -0.247033, -0.747085, -0.00222492, 1.27925, 0.367192 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 0.769334, 0, 0, 0, 0.304207, 0, 0, 0, 0.769334, 0, 0, 0 )
+mesh = SubResource( 1 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+transform = Transform( 5.20686, 0, 0, 0, 1, 0, 0, 0, 2.51214, 0, -0.953517, 0 )
+mesh = SubResource( 2 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -0.483787, 0.0527427, -0.873595, 0, 0.998182, 0.0602646, 0.875186, 0.0291552, -0.482907, -1.616, 0.894, -2.094 )
+current = true
+fov = 56.7
+near = 0.63
+far = 64.3
+
+[node name="Menu" parent="." instance=ExtResource( 1 )]

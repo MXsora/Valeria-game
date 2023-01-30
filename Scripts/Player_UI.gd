@@ -3,7 +3,7 @@ extends Control
 
 export var playerPath: NodePath
 onready var player: Node
-onready var healthBar = get_node("HealthBar")
+onready var healthBar = get_node("MarginContainer/HealthBar")
 onready var weaponIcon = get_node("CurrentWeapon")
 
 
@@ -14,7 +14,6 @@ func _ready():
 
 func UpdateHealth():
 	healthBar.value = player.curHP
-
 
 func UpdateWeapon(weaponNum):
 	weaponIcon.frame = weaponNum
