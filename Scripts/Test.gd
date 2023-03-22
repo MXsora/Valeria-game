@@ -1,13 +1,13 @@
 extends Spatial
 
 
-var enemyBase = preload("res://Scenes/InGame/Enemy_Base.tscn")
+var enemyBase = preload("res://Scenes/InGame/Enemies/Enemy_Base.tscn")
 var enemy
 onready var enemySpawn = get_node("EnemySpawn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	MusicManager.changeSong("res://Sound/Music/Placeholder Battle Theme.mp3")
 
 
 

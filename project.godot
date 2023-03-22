@@ -24,6 +24,7 @@ MusicManager="*res://Scenes/Logic/MusicManager.tscn"
 window/size/width=1920
 window/size/height=1080
 window/size/borderless=true
+window/size/fullscreen=true
 
 [global]
 
