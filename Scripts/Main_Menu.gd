@@ -1,7 +1,7 @@
 extends Control
 
 
-onready var cursor = get_node("monstrosity")
+@onready var cursor = get_node("monstrosity")
 
 var menuNumber: int = 0
 
@@ -24,18 +24,18 @@ func _process(delta):
 func changeCursor():
 	match menuNumber:
 		0:
-			cursor.rect_position.y = 480
+			cursor.position.y = 480
 		1:
-			cursor.rect_position.y = 575
+			cursor.position.y = 575
 		2:
-			cursor.rect_position.y = 673
+			cursor.position.y = 673
 		3:
-			cursor.rect_position.y = 769
+			cursor.position.y = 769
 
 func menuSelection():
 	match menuNumber:
 		0:
-			get_tree().change_scene("res://Scenes/Test.tscn")
+			get_tree().change_scene_to_file("res://Scenes/Test.tscn")
 		1:
 			pass
 		2:

@@ -1,6 +1,6 @@
 extends Node
 
-onready var musicPlayer = get_node("AudioStreamPlayer")
+@onready var musicPlayer = get_node("AudioStreamPlayer")
 var currentSong: AudioStreamMP3
 
 

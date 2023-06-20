@@ -1,21 +1,21 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Art/BLKCHCRY.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://Art/BLKCHCRY.TTF" type="FontFile" id=1]
 [ext_resource path="res://Scripts/Main_Menu.gd" type="Script" id=2]
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="FontFile" id=1]
 size = 218
 outline_size = 9
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 size = 80
 outline_size = 6
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="FontFile" id=3]
 size = 72
 font_data = ExtResource( 1 )
 
@@ -27,87 +27,87 @@ script = ExtResource( 2 )
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 100.0
-margin_top = 100.0
-margin_right = -100.0
-margin_bottom = -100.0
+offset_left = 100.0
+offset_top = 100.0
+offset_right = -100.0
+offset_bottom = -100.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-margin_right = 1720.0
-margin_bottom = 880.0
+offset_right = 1720.0
+offset_bottom = 880.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_right = 633.0
-margin_bottom = 880.0
+offset_right = 633.0
+offset_bottom = 880.0
 
 [node name="Title" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_right = 633.0
-margin_bottom = 273.0
-custom_fonts/font = SubResource( 1 )
+offset_right = 633.0
+offset_bottom = 273.0
+theme_override_fonts/font = SubResource( 1 )
 text = "Valeri"
 
 [node name="Title2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 277.0
-margin_right = 633.0
-margin_bottom = 378.0
-custom_fonts/font = SubResource( 2 )
+offset_top = 277.0
+offset_right = 633.0
+offset_bottom = 378.0
+theme_override_fonts/font = SubResource( 2 )
 text = "of Blood and Bones"
 
 [node name="NewGame" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 382.0
-margin_right = 633.0
-margin_bottom = 473.0
-custom_fonts/font = SubResource( 3 )
+offset_top = 382.0
+offset_right = 633.0
+offset_bottom = 473.0
+theme_override_fonts/font = SubResource( 3 )
 text = "New Game"
 
 [node name="Continue" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 477.0
-margin_right = 633.0
-margin_bottom = 568.0
-custom_fonts/font = SubResource( 3 )
+offset_top = 477.0
+offset_right = 633.0
+offset_bottom = 568.0
+theme_override_fonts/font = SubResource( 3 )
 text = "Continue"
 
 [node name="Options" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 572.0
-margin_right = 633.0
-margin_bottom = 663.0
-custom_fonts/font = SubResource( 3 )
+offset_top = 572.0
+offset_right = 633.0
+offset_bottom = 663.0
+theme_override_fonts/font = SubResource( 3 )
 text = "Options"
 
 [node name="Quit" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 667.0
-margin_right = 633.0
-margin_bottom = 758.0
-custom_fonts/font = SubResource( 3 )
+offset_top = 667.0
+offset_right = 633.0
+offset_bottom = 758.0
+theme_override_fonts/font = SubResource( 3 )
 text = "Quit"
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 637.0
-margin_right = 637.0
-margin_bottom = 880.0
+offset_left = 637.0
+offset_right = 637.0
+offset_bottom = 880.0
 
 [node name="monstrosity" type="Control" parent="."]
-margin_left = 80.0
-margin_top = 480.0
-margin_right = 120.0
-margin_bottom = 520.0
+offset_left = 80.0
+offset_top = 480.0
+offset_right = 120.0
+offset_bottom = 520.0
 
 [node name="ColorRect" type="ColorRect" parent="monstrosity"]
-margin_right = 273.0
-margin_bottom = 6.0
+offset_right = 273.0
+offset_bottom = 6.0
 
 [node name="ColorRect2" type="ColorRect" parent="monstrosity"]
-margin_left = 109.0
-margin_top = 87.0
-margin_right = 382.0
-margin_bottom = 93.0
+offset_left = 109.0
+offset_top = 87.0
+offset_right = 382.0
+offset_bottom = 93.0
 
 [node name="ColorRect3" type="ColorRect" parent="monstrosity"]
-margin_left = 374.0
-margin_top = 30.0
-margin_right = 382.0
-margin_bottom = 93.0
+offset_left = 374.0
+offset_top = 30.0
+offset_right = 382.0
+offset_bottom = 93.0
 
 [node name="ColorRect4" type="ColorRect" parent="monstrosity"]
-margin_right = 7.0
-margin_bottom = 63.0
+offset_right = 7.0
+offset_bottom = 63.0

@@ -1,4 +1,4 @@
-extends KinematicBody
+extends CharacterBody3D
 
 var maxHealth: int = 3
 var currentHealth = maxHealth
@@ -15,8 +15,8 @@ var currentState
 
 var forward: Vector3 = Vector3(0, 0, 0)
 
-onready var animPlayer = get_node("Graphics/AnimationPlayer")
-onready var timer = get_node("Timer")
+@onready var animPlayer = get_node("Graphics/AnimationPlayer")
+@onready var timer = get_node("Timer")
 
 
 func _ready():
@@ -29,7 +29,9 @@ func _physics_process(delta):
 	if (currentState == states.TURNING):
 		rotation_degrees.y += turnSpeed * delta
 	if (currentState == states.MOVING):
-		forward = move_and_slide(forward)
+		set_velocity(forward)
+		move_and_slide()
+		forward = velocity
 
 func ChangeState():
 	forward = transform.basis.z * moveSpeed
@@ -43,7 +45,7 @@ func GetHit(playerDamage):
 	currentHealth -= playerDamage
 	timer.paused = true
 	animPlayer.play("hurt_test")
-	yield(animPlayer, "animation_finished")
+	await animPlayer.animation_finished
 	checkDeath()
 	timer.paused = false
 

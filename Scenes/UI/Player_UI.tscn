@@ -1,11 +1,11 @@
 [gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/Player_UI.gd" type="Script" id=1]
-[ext_resource path="res://Art/Work Files/WeaponsUI.png" type="Texture" id=2]
+[ext_resource path="res://Art/Work Files/WeaponsUI.png" type="Texture2D" id=2]
 
 [sub_resource type="Gradient" id=1]
-offsets = PoolRealArray( 0.00584795, 0.374269, 0.654971, 0.994152 )
-colors = PoolColorArray( 0.151337, 0.31682, 0.667969, 1, 0.480835, 0.69361, 0.789063, 1, 0.278198, 0.614577, 0.828125, 1, 0.151337, 0.31682, 0.667969, 1 )
+offsets = PackedFloat32Array( 0.00584795, 0.374269, 0.654971, 0.994152 )
+colors = PackedColorArray( 0.151337, 0.31682, 0.667969, 1, 0.480835, 0.69361, 0.789063, 1, 0.278198, 0.614577, 0.828125, 1, 0.151337, 0.31682, 0.667969, 1 )
 
 [sub_resource type="GradientTexture2D" id=2]
 gradient = SubResource( 1 )
@@ -57,7 +57,7 @@ animations = [ {
 } ]
 
 [node name="Player_UI" type="Control"]
-pause_mode = 2
+process_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
@@ -65,27 +65,27 @@ script = ExtResource( 1 )
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 135.0
-margin_top = -90.0
-margin_right = 503.0
-margin_bottom = -45.0
+offset_left = 135.0
+offset_top = -90.0
+offset_right = 503.0
+offset_bottom = -45.0
 
-[node name="HealthBar" type="TextureProgress" parent="MarginContainer"]
-margin_right = 368.0
-margin_bottom = 45.0
+[node name="HealthBar" type="TextureProgressBar" parent="MarginContainer"]
+offset_right = 368.0
+offset_bottom = 45.0
 value = 50.0
 rounded = true
 texture_progress = SubResource( 2 )
 nine_patch_stretch = true
 
 [node name="HealthNumbers" type="Label" parent="MarginContainer/HealthBar"]
-margin_left = 17.0
-margin_top = -25.0
-margin_right = 77.0
-margin_bottom = -6.0
+offset_left = 17.0
+offset_top = -25.0
+offset_right = 77.0
+offset_bottom = -6.0
 text = "10/10"
 
-[node name="CurrentWeapon" type="AnimatedSprite" parent="."]
+[node name="CurrentWeapon" type="AnimatedSprite2D" parent="."]
 position = Vector2( 77, 997 )
 scale = Vector2( 2.24219, 2.24219 )
 frames = SubResource( 12 )

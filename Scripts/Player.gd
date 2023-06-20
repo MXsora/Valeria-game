@@ -1,4 +1,4 @@
-extends KinematicBody
+extends CharacterBody3D
 
 
 var curHP : int = 10
@@ -42,30 +42,31 @@ var weaponWheel: Vector2 = Vector2(0,0)
 var direction: Vector3 = Vector3(0,0,0)
 var snapVector: Vector3 = Vector3.DOWN
 
+var moveTween: Tween
+
 var enemyList = []
 
-onready var cameraOrbit = get_node("CameraOrbit")
-onready var model = get_node("Graphics/model")
-onready var attackAnimPlayer = get_node("Graphics/AttackAnimationPlayer")
-onready var movementAnimPlayer = get_node("Graphics/MovementAnimationPlayer")
-onready var userInterface = find_node("Player_UI")
-onready var hitBox = get_node("WeaponHolder/HitBox")
-onready var recoveryTimer = get_node("Timer")
-onready var moveTween = get_node("Tween")
+@onready var cameraOrbit = get_node("CameraOrbit")
+@onready var model = get_node("Graphics/model")
+@onready var attackAnimPlayer = get_node("Graphics/AttackAnimationPlayer")
+@onready var movementAnimPlayer = get_node("Graphics/MovementAnimationPlayer")
+@onready var userInterface = find_child("Player_UI")
+@onready var hitBox = get_node("WeaponHolder/HitBox")
+@onready var recoveryTimer = get_node("Timer")
 
-onready var basicSwordModel = get_node("WeaponHolder/Weapons/basic long sword")
-onready var punchDaggerModel = get_node("WeaponHolder/Weapons/punching dagger")
-onready var daggerModel = get_node("WeaponHolder/Weapons/dagger")
-onready var saberModel = get_node("WeaponHolder/Weapons/saber")
-onready var rapierModel = get_node("WeaponHolder/Weapons/rapier")
-onready var scytheModel = get_node("WeaponHolder/Weapons/scythe")
-onready var greatSwordModel = get_node("WeaponHolder/Weapons/greatsword")
-onready var maceModel = get_node("WeaponHolder/Weapons/mace")
-onready var caestusModel = get_node("WeaponHolder/Weapons/caestus")
+@onready var basicSwordModel = get_node("WeaponHolder/Weapons/basic long sword")
+@onready var punchDaggerModel = get_node("WeaponHolder/Weapons/punching dagger")
+@onready var daggerModel = get_node("WeaponHolder/Weapons/dagger")
+@onready var saberModel = get_node("WeaponHolder/Weapons/saber")
+@onready var rapierModel = get_node("WeaponHolder/Weapons/rapier")
+@onready var scytheModel = get_node("WeaponHolder/Weapons/scythe")
+@onready var greatSwordModel = get_node("WeaponHolder/Weapons/greatsword")
+@onready var maceModel = get_node("WeaponHolder/Weapons/mace")
+@onready var caestusModel = get_node("WeaponHolder/Weapons/caestus")
 var currentWeaponModel = Mesh
 
 func _ready():
-	cameraOrbit.set_as_toplevel(true)
+	cameraOrbit.set_as_top_level(true)
 	currentJumpState = jumpStates.READY
 	currentActionState = actionStates.READY
 	isMoving = false
@@ -129,11 +130,13 @@ func _physics_process(delta):
 		pass
 
 	if(Input.is_action_just_pressed("ig_dodge") and is_on_floor() and recoveryTimer.is_stopped()):
+		moveTween = create_tween()
 		comboNumber = 0
 		currentActionState = actionStates.DODGE
 		attackAnimPlayer.play("Dodge")
-		moveTween.interpolate_property(self, "moveSpeed", 35, moveSpeed, 0.5, Tween.TRANS_EXPO,Tween.EASE_OUT )
-		moveTween.start()
+		moveSpeed = 35
+		moveTween.tween_property(self, "moveSpeed", 7, 0.5).set_ease(Tween.EASE_OUT)
+		moveTween.play()
 		recoveryTimer.start(0.4)
 
 
@@ -178,7 +181,12 @@ func _physics_process(delta):
 	else:
 		isMoving = false
 	#move the player
-	direction = move_and_slide_with_snap(direction, snapVector, Vector3.UP, true)	
+	set_velocity(direction)
+	# TODOConverter40 looks that snap in Godot 4.0 is float, not vector like in Godot 3 - previous value `snapVector`
+	set_up_direction(Vector3.UP)
+	set_floor_stop_on_slope_enabled(true)
+	move_and_slide()
+	direction = velocity	
 
 
 func getGravity():
@@ -211,7 +219,7 @@ func getRightStickInput():
 		RJoystick.y = 0
 
 func cameraFollow():
-	cameraOrbit.translation = lerp(cameraOrbit.translation, translation, .1)
+	cameraOrbit.position = lerp(cameraOrbit.position, position, .1)
 
 func basicAttackString():
 	if (!recoveryTimer.is_stopped()):
@@ -238,16 +246,17 @@ func basicAttackString():
 		weapons.BasicLongSword:
 			match comboNumber:
 				0:
-					basicAttack(0.2, 15, 5, 0.2, "attack_Test1")
+					basicAttack(0.2, 5, 0.2, "attack_Test1")
 				1:
-					basicAttack(0.26, 10, 5, 0.3, "attack_Test2")
+					basicAttack(0.26, 5, 0.3, "attack_Test2")
 				2:
-					basicAttack(0.4, 35, 2, 0.5, "attack_Test3")
+					basicAttack(0.4, 2, 0.5, "attack_Test3")
 
-func basicAttack(recoveryTime, newMoveSpeed, endMoveSpeed, tweenTime, attackName):
+func basicAttack(recoveryTime, endMoveSpeed, tweenTime, attackName):
+	moveTween = create_tween()
 	attackAnimPlayer.play(attackName)
-	moveTween.interpolate_property(self, "moveSpeed", newMoveSpeed, endMoveSpeed, tweenTime, Tween.TRANS_EXPO,Tween.EASE_OUT )
-	moveTween.start()
+	moveTween.tween_property(self, "moveSpeed", endMoveSpeed, tweenTime)
+	moveTween.play()
 	recoveryTimer.start(recoveryTime)
 	comboNumber += 1
 	

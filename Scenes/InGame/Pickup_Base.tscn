@@ -4,17 +4,17 @@
 radial_segments = 10
 rings = 8
 
-[sub_resource type="SphereShape" id=2]
+[sub_resource type="SphereShape3D" id=2]
 
-[node name="Pickup" type="Spatial"]
+[node name="Pickup" type="Node3D"]
 
-[node name="Graphics" type="Spatial" parent="."]
+[node name="Graphics" type="Node3D" parent="."]
 
-[node name="MeshInstance" type="MeshInstance" parent="Graphics"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Graphics"]
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
 
-[node name="Hitbox" type="Area" parent="."]
+[node name="Hitbox" type="Area3D" parent="."]
 
-[node name="CollisionShape" type="CollisionShape" parent="Hitbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource( 2 )

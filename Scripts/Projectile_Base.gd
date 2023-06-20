@@ -1,10 +1,10 @@
-extends Spatial
+extends Node3D
 
 
 var projectileSpeed: float = 3.0
 var projectileDamage: int = 1
 
-onready var projectileTimer = get_node("Timer")
+@onready var projectileTimer = get_node("Timer")
 
 
 # Called when the node enters the scene tree for the first time.

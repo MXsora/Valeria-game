@@ -1,10 +1,10 @@
 extends Control
 
 
-export var playerPath: NodePath
-onready var player: Node
-onready var healthBar = get_node("MarginContainer/HealthBar")
-onready var weaponIcon = get_node("CurrentWeapon")
+@export var playerPath: NodePath
+@onready var player: Node
+@onready var healthBar = get_node("MarginContainer/HealthBar")
+@onready var weaponIcon = get_node("CurrentWeapon")
 
 
 # Called when the node enters the scene tree for the first time.
