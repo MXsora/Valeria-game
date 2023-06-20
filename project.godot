@@ -22,8 +22,9 @@ MusicManager="*res://Scenes/Logic/MusicManager.tscn"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/width=1920
+window/size/height=1080
+
 
 [global]
 
